@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>BowlerGuard</title>
+  <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+  <div class="wrap">
+    <div class="header">
+      <div class="brand">
+        <h1>BowlerGuard — Injury Risk Assessment</h1>
+      </div>
+
+      <div class="pill">
+        <span class="dot"></span>
+        API running at <span class="mono">http://localhost:5000</span>
+      </div>
+    </div>
+
+    <div id="loginView" class="login-shell">
+      <div class="login-card">
+        <h2 class="login-title">Login</h2>
+        <p class="login-sub">
+          Access to the BowlerGuard prediction interface is restricted to authenticated users.
+        </p>
+
+        <div class="login-grid">
+          <div>
+            <label for="username">Username</label>
+            <input id="username" placeholder="Enter username">
+          </div>
+
+          <div>
+            <label for="password">Password</label>
+            <input id="password" type="password" placeholder="Enter password">
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn-primary" id="loginBtn">Login</button>
+        </div>
+
+        <div id="loginStatus" class="status"></div>
+      </div>
+    </div>
+
+    <div id="appView" class="hidden">
+      <div class="topbar">
+        <div class="topbar-user">
+          <strong id="welcomeText">Welcome</strong>
+          <span id="roleText">Role: —</span>
+        </div>
+
+        <button class="btn-danger" id="logoutBtn">Logout</button>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <div class="card-h">
+            <h2>Inputs</h2>
+          </div>
+
+          <div class="card-b">
+            <p class="section-title">Feature Inputs</p>
+            <div id="form"></div>
+
+            <div class="actions">
+              <button class="btn-ghost" id="healthBtn">API Health</button>
+              <button class="btn-primary" id="predictBtn">Predict</button>
+              <button class="btn-ghost" id="explainBtn">Explain (SHAP)</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-h">
+            <h2>Outputs</h2>
+            <small>Prediction + probabilities + explanation</small>
+          </div>
+
+          <div class="card-b">
+            <div class="results">
+              <div class="risk-badge" id="riskBadge">
+                <div class="badge-dot"></div>
+                <div>
+                  <p class="risk-title" id="riskLabelText">—</p>
+                  <p class="risk-sub">Predicted injury risk class</p>
+                </div>
+              </div>
+
+              <div class="kpi">
+                <div class="box">
+                  <div class="k">Fatigue Score</div>
+                  <div class="v" id="fatigueText">—</div>
+                </div>
+
+                <div class="box">
+                  <div class="k">Valid Window</div>
+                  <div class="v">Next day / spell</div>
+                </div>
+              </div>
+
+              <div class="prob">
+                <h3>Class Probabilities</h3>
+
+                <div class="bar">
+                  <div>Low</div>
+                  <div class="track"><div class="fill" id="pLow"></div></div>
+                  <div id="pLowTxt">—</div>
+                </div>
+
+                <div class="bar">
+                  <div>Medium</div>
+                  <div class="track"><div class="fill" id="pMed"></div></div>
+                  <div id="pMedTxt">—</div>
+                </div>
+
+                <div class="bar">
+                  <div>High</div>
+                  <div class="track"><div class="fill" id="pHigh"></div></div>
+                  <div id="pHighTxt">—</div>
+                </div>
+              </div>
+
+              <div id="standardOutput" class="response-card">
+                <h3 class="response-title">Standard Output</h3>
+                <div id="standardOutputBody" class="json-grid">
+                  <div class="json-row">
+                    <span class="json-key">Status</span>
+                    <span class="json-value">Awaiting action</span>
+                  </div>
+                </div>
+              </div>
+
+              <div id="contributorsCard" class="response-card hidden">
+                <h3 class="response-title">Top SHAP Contributors</h3>
+                <table class="contributors">
+                  <thead>
+                    <tr>
+                      <th>Feature</th>
+                      <th>SHAP Value</th>
+                    </tr>
+                  </thead>
+                  <tbody id="contributorsBody"></tbody>
+                </table>
+              </div>
+
+              <div class="debug-wrap">
+                <details>
+                  <summary>View raw API response (debug)</summary>
+                  <pre id="out">{}</pre>
+                </details>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="./js/app.js"></script>
+</body>
+</html>

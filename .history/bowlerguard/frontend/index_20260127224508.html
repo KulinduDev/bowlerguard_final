@@ -1,0 +1,103 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>BowlerGuard IPD </title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 24px; max-width: 900px; }
+    .row { margin: 6px 0; }
+    label { display:inline-block; width: 260px; }
+    input { width: 140px; }
+    button { margin-right: 10px; padding: 8px 12px; }
+    pre { background: #f4f4f4; padding: 12px; border-radius: 8px; overflow:auto; }
+    small { color: #444; }
+  </style>
+</head>
+<body>
+  <h2>BowlerGuard — Injury Risk Prediction (IPD Prototype)</h2>
+  
+  <h3>Input Features</h3>
+  <div id="form"></div>
+
+  <div style="margin-top:12px;">
+    <button onclick="health()">API Health</button>
+    <button onclick="predict()">Predict</button>
+    <button onclick="explain()">Explain (SHAP)</button>
+  </div>
+
+  <h3>Output</h3>
+  <pre id="out">{}</pre>
+
+<script>
+const API = "http://localhost:5000";
+
+const featureCols = [
+ "deliveries_match","deliveries_7d","deliveries_28d","acwr_std","days_since_prev",
+ "match_day","avg_temp_c","avg_humidity_pct","precip_mm","esi_norm",
+ "age_years","inferred_fielding_time_minutes"
+];
+
+
+const defaults = {
+ "deliveries_match": 72,
+ "deliveries_7d": 240,
+ "deliveries_28d": 700,
+ "acwr_std": 1.37,
+ "days_since_prev": 1,
+ "match_day": 3,
+ "avg_temp_c": 31,
+ "avg_humidity_pct": 78,
+ "precip_mm": 3,
+ "esi_norm": 0.65,
+ "age_years": 28,
+ "inferred_fielding_time_minutes": 160
+};
+
+const container = document.getElementById("form");
+featureCols.forEach(c => {
+  const div = document.createElement("div");
+  div.className = "row";
+  div.innerHTML = `
+    <label>${c}</label>
+    <input id="${c}" value="${defaults[c] ?? 0}">
+  `;
+  container.appendChild(div);
+});
+
+function buildPayload(){
+  const payload = {};
+  featureCols.forEach(c => payload[c] = Number(document.getElementById(c).value));
+  return payload;
+}
+
+function show(obj){
+  document.getElementById("out").textContent = JSON.stringify(obj, null, 2);
+}
+
+async function health(){
+  const r = await fetch(API + "/health");
+  show(await r.json());
+}
+
+async function predict(){
+  const payload = buildPayload();
+  const r = await fetch(API + "/predict", {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify(payload)
+  });
+  show(await r.json());
+}
+
+async function explain(){
+  const payload = buildPayload();
+  const r = await fetch(API + "/explain", {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify(payload)
+  });
+  show(await r.json());
+}
+</script>
+</body>
+</html>

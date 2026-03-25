@@ -1,0 +1,597 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>BowlerGuard</title>
+
+  <style>
+    :root{
+      --bg:#0b1020;
+      --card:#111a33;
+      --card2:#0f1730;
+      --text:#e8ecff;
+      --muted:#b8c0ff;
+      --line:rgba(255,255,255,.10);
+      --shadow: 0 12px 30px rgba(0,0,0,.35);
+      --radius:16px;
+
+      --low:#20c997;
+      --med:#f59f00;
+      --high:#fa5252;
+      --btn:#4c6ef5;
+      --btn2:#364fc7;
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      background: radial-gradient(1200px 800px at 20% 10%, rgba(76,110,245,.35), transparent 55%),
+                  radial-gradient(900px 700px at 80% 30%, rgba(32,201,151,.20), transparent 55%),
+                  radial-gradient(900px 700px at 60% 90%, rgba(250,82,82,.15), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+      min-height:100vh;
+    }
+
+    .wrap{
+      max-width:1100px;
+      margin:0 auto;
+      padding:22px 18px 36px;
+    }
+
+    .header{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:16px;
+      margin-bottom:14px;
+    }
+
+    .brand h1{
+      margin:0;
+      font-size:28px;
+      line-height:1.1;
+      letter-spacing:.2px;
+    }
+    .brand p{
+      margin:8px 0 0;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.4;
+      max-width: 720px;
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:rgba(255,255,255,.04);
+      box-shadow: var(--shadow);
+      font-size:13px;
+      color:var(--muted);
+      white-space:nowrap;
+    }
+    .dot{
+      width:10px;height:10px;border-radius:50%;
+      background: #51cf66;
+      box-shadow: 0 0 0 4px rgba(81,207,102,.15);
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:18px;
+      margin-top:14px;
+    }
+    @media (max-width: 980px){
+      .grid{ grid-template-columns:1fr; }
+      .pill{ display:none; }
+    }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .card-h{
+      padding:16px 18px;
+      border-bottom:1px solid var(--line);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .card-h h2{
+      margin:0;
+      font-size:16px;
+      letter-spacing:.2px;
+    }
+    .card-h small{ color:var(--muted); }
+
+    .card-b{ padding:16px 18px 18px; }
+
+    .section-title{
+      margin:0 0 10px;
+      font-size:12px;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:.12em;
+    }
+
+    #form{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap:12px;
+    }
+    @media (max-width: 720px){
+      #form{ grid-template-columns:1fr; }
+    }
+
+    .row{
+      padding:12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.12);
+    }
+
+    label{
+      display:block;
+      width:auto;
+      font-size:12px;
+      color:var(--muted);
+      margin:0 0 6px;
+      letter-spacing:.2px;
+    }
+
+    input{
+      width:100%;
+      padding:10px 11px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.15);
+      color:var(--text);
+      outline:none;
+    }
+    input:focus{
+      border-color: rgba(76,110,245,.75);
+      box-shadow: 0 0 0 4px rgba(76,110,245,.18);
+    }
+
+    .hint{
+      margin-top:7px;
+      font-size:12px;
+      color:rgba(184,192,255,.85);
+      line-height:1.35;
+    }
+
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+
+    button{
+      border:0;
+      border-radius:12px;
+      padding:10px 14px;
+      font-weight:700;
+      cursor:pointer;
+      transition:.15s ease;
+    }
+    .btn-primary{
+      background: linear-gradient(180deg, var(--btn), var(--btn2));
+      color:white;
+    }
+    .btn-primary:hover{ transform: translateY(-1px); filter:brightness(1.05); }
+    .btn-ghost{
+      background: rgba(255,255,255,.06);
+      color:var(--text);
+      border:1px solid rgba(255,255,255,.12);
+    }
+    .btn-ghost:hover{ filter:brightness(1.08); }
+
+    .results{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    .risk-badge{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.16);
+    }
+    .badge-dot{
+      width:12px;height:12px;border-radius:50%;
+      background: rgba(255,255,255,.45);
+    }
+    .risk-badge.low  .badge-dot{ background: var(--low);  box-shadow:0 0 0 5px rgba(32,201,151,.16); }
+    .risk-badge.med  .badge-dot{ background: var(--med);  box-shadow:0 0 0 5px rgba(245,159,0,.16); }
+    .risk-badge.high .badge-dot{ background: var(--high); box-shadow:0 0 0 5px rgba(250,82,82,.16); }
+
+    .risk-title{ font-size:14px; font-weight:800; margin:0; }
+    .risk-sub{ font-size:12px; color:var(--muted); margin:2px 0 0; }
+
+    .kpi{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+    }
+    .kpi .box{
+      padding:12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.12);
+    }
+    .kpi .k{ font-size:12px; color:var(--muted); margin-bottom:6px; }
+    .kpi .v{ font-size:18px; font-weight:900; letter-spacing:.2px; }
+
+    .prob{
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.12);
+      border-radius:14px;
+      padding:12px;
+    }
+    .prob h3{
+      margin:0 0 10px;
+      font-size:12px;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:.12em;
+    }
+    .bar{
+      display:grid;
+      grid-template-columns: 72px 1fr 48px;
+      gap:10px;
+      align-items:center;
+      margin-bottom:10px;
+      font-size:13px;
+    }
+    .bar:last-child{ margin-bottom:0; }
+    .track{
+      height:10px;
+      border-radius:999px;
+      background: rgba(255,255,255,.08);
+      overflow:hidden;
+    }
+    .fill{
+      height:100%;
+      border-radius:999px;
+      width:0%;
+      background: var(--btn);
+    }
+    .mono{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    pre{
+      margin:0;
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+      padding:12px;
+      border-radius:14px;
+      overflow:auto;
+      color: rgba(232,236,255,.95);
+    }
+
+    .note{
+      color:rgba(184,192,255,.75);
+      font-size:12px;
+      line-height:1.5;
+      margin-top:12px;
+    }
+
+    .login-box{
+      margin-bottom:18px;
+      padding:16px 18px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      box-shadow: var(--shadow);
+    }
+    .login-box h3{
+      margin:0 0 12px;
+      font-size:18px;
+    }
+    .login-inline{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .login-inline input{
+      max-width:220px;
+    }
+    #loginStatus{
+      margin:10px 0 0;
+      color:var(--muted);
+      font-size:14px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+
+    <div class="header">
+      <div class="brand">
+        <h1>BowlerGuard — Injury Risk Assessment</h1>
+      </div>
+
+      <div class="pill">
+        <span class="dot"></span>
+        API running at <span class="mono">http://localhost:5000</span>
+      </div>
+    </div>
+
+    <div class="login-box">
+      <h3>Login</h3>
+      <div class="login-inline">
+        <input id="username" placeholder="Username">
+        <input id="password" type="password" placeholder="Password">
+        <button class="btn-primary" onclick="login()">Login</button>
+      </div>
+      <p id="loginStatus"></p>
+    </div>
+
+    <div class="grid">
+
+      <div class="card">
+        <div class="card-h">
+          <h2>Inputs</h2>
+        </div>
+        <div class="card-b">
+          <p class="section-title">Feature Inputs</p>
+          <div id="form"></div>
+
+          <div class="actions">
+            <button class="btn-ghost" onclick="health()">API Health</button>
+            <button class="btn-primary" onclick="predict()">Predict</button>
+            <button class="btn-ghost" onclick="explain()">Explain (SHAP)</button>
+          </div>
+
+          <div class="note"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-h">
+          <h2>Outputs</h2>
+          <small>Prediction + probabilities + explanation</small>
+        </div>
+
+        <div class="card-b">
+          <div class="results">
+
+            <div class="risk-badge" id="riskBadge">
+              <div class="badge-dot"></div>
+              <div>
+                <p class="risk-title" id="riskLabelText">—</p>
+                <p class="risk-sub">Predicted injury risk class</p>
+              </div>
+            </div>
+
+            <div class="kpi">
+              <div class="box">
+                <div class="k">Fatigue Score</div>
+                <div class="v" id="fatigueText">—</div>
+              </div>
+              <div class="box">
+                <div class="k">Valid Window</div>
+                <div class="v">Next day / spell</div>
+              </div>
+            </div>
+
+            <div class="prob">
+              <h3>Class Probabilities</h3>
+
+              <div class="bar">
+                <div>Low</div>
+                <div class="track"><div class="fill" id="pLow"></div></div>
+                <div id="pLowTxt">—</div>
+              </div>
+
+              <div class="bar">
+                <div>Medium</div>
+                <div class="track"><div class="fill" id="pMed"></div></div>
+                <div id="pMedTxt">—</div>
+              </div>
+
+              <div class="bar">
+                <div>High</div>
+                <div class="track"><div class="fill" id="pHigh"></div></div>
+                <div id="pHighTxt">—</div>
+              </div>
+            </div>
+
+            <p class="section-title">Raw API Response (debug)</p>
+            <pre id="out">{}</pre>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+<script>
+const API = "http://localhost:5000";
+
+const featureCols = [
+ "deliveries_match","deliveries_7d","deliveries_28d","acwr_std","days_since_prev",
+ "match_day","avg_temp_c","avg_humidity_pct","precip_mm","esi_norm",
+ "age_years","inferred_fielding_time_minutes"
+];
+
+const defaults = {
+ "deliveries_match": 72,
+ "deliveries_7d": 240,
+ "deliveries_28d": 700,
+ "acwr_std": 1.37,
+ "days_since_prev": 1,
+ "match_day": 3,
+ "avg_temp_c": 31,
+ "avg_humidity_pct": 78,
+ "precip_mm": 3,
+ "esi_norm": 0.65,
+ "age_years": 28,
+ "inferred_fielding_time_minutes": 160
+};
+
+const pretty = {
+  deliveries_match: "Deliveries (match)",
+  deliveries_7d: "Deliveries (last 7 days)",
+  deliveries_28d: "Deliveries (last 28 days)",
+  acwr_std: "ACWR (standardised)",
+  days_since_prev: "Days since previous match",
+  match_day: "Match day (1–5)",
+  avg_temp_c: "Average temperature (°C)",
+  avg_humidity_pct: "Average humidity (%)",
+  precip_mm: "Precipitation (mm)",
+  esi_norm: "ESI (0–1)",
+  age_years: "Age (years)",
+  inferred_fielding_time_minutes: "Fielding time (minutes)"
+};
+
+const hints = {
+  deliveries_match: "Total deliveries bowled in the match.",
+  deliveries_7d: "Last 7 days total workload (deliveries).",
+  deliveries_28d: "Last 28 days total workload (deliveries).",
+  acwr_std: "Acute:chronic workload ratio.",
+  days_since_prev: "Rest between matches (days).",
+  match_day: "Test match day number (1–5).",
+  esi_norm: "Environmental Stress Index (0–1).",
+  inferred_fielding_time_minutes: "Approx time fielding (minutes)."
+};
+
+const container = document.getElementById("form");
+featureCols.forEach(c => {
+  const div = document.createElement("div");
+  div.className = "row";
+  div.innerHTML = `
+    <label for="${c}">${pretty[c] ?? c}</label>
+    <input id="${c}" value="${defaults[c] ?? 0}" inputmode="decimal">
+    <div class="hint">${hints[c] ?? ""}</div>
+  `;
+  container.appendChild(div);
+});
+
+function buildPayload(){
+  const payload = {};
+  featureCols.forEach(c => payload[c] = Number(document.getElementById(c).value));
+  return payload;
+}
+
+function show(obj){
+  document.getElementById("out").textContent = JSON.stringify(obj, null, 2);
+}
+
+function renderPrettyOutputs(obj){
+  show(obj);
+
+  if (obj && obj.error){
+    document.getElementById("riskLabelText").innerText = "Error";
+    document.getElementById("fatigueText").innerText = "—";
+    document.getElementById("pLowTxt").innerText = "—";
+    document.getElementById("pMedTxt").innerText = "—";
+    document.getElementById("pHighTxt").innerText = "—";
+    document.getElementById("pLow").style.width = "0%";
+    document.getElementById("pMed").style.width = "0%";
+    document.getElementById("pHigh").style.width = "0%";
+    document.getElementById("riskBadge").classList.remove("low","med","high");
+    return;
+  }
+
+  const label = (obj.predicted_label || "—");
+  document.getElementById("riskLabelText").innerText = label;
+
+  const badge = document.getElementById("riskBadge");
+  badge.classList.remove("low","med","high");
+  if (label.toLowerCase() === "low") badge.classList.add("low");
+  if (label.toLowerCase() === "medium") badge.classList.add("med");
+  if (label.toLowerCase() === "high") badge.classList.add("high");
+
+  if (obj.fatigue_score !== undefined && obj.fatigue_score !== null){
+    const f = Number(obj.fatigue_score);
+    document.getElementById("fatigueText").innerText = isFinite(f) ? f.toFixed(1) : "—";
+  } else {
+    document.getElementById("fatigueText").innerText = "—";
+  }
+
+  const probs = obj.probabilities || {};
+  const pLow = (probs.Low ?? 0) * 100;
+  const pMed = (probs.Medium ?? 0) * 100;
+  const pHigh = (probs.High ?? 0) * 100;
+
+  document.getElementById("pLow").style.width = pLow.toFixed(0) + "%";
+  document.getElementById("pMed").style.width = pMed.toFixed(0) + "%";
+  document.getElementById("pHigh").style.width = pHigh.toFixed(0) + "%";
+
+  document.getElementById("pLowTxt").innerText = pLow.toFixed(0) + "%";
+  document.getElementById("pMedTxt").innerText = pMed.toFixed(0) + "%";
+  document.getElementById("pHighTxt").innerText = pHigh.toFixed(0) + "%";
+}
+
+async function login(){
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+
+  const r = await fetch(API + "/login", {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    credentials: "include",
+    body: JSON.stringify({ username, password })
+  });
+
+  const data = await r.json();
+  if (data.error){
+    document.getElementById("loginStatus").innerText = data.error;
+  } else {
+    document.getElementById("loginStatus").innerText =
+      data.message + " | Role: " + data.role;
+  }
+}
+
+async function health(){
+  const r = await fetch(API + "/health", {
+    credentials: "include"
+  });
+  renderPrettyOutputs(await r.json());
+}
+
+async function predict(){
+  const payload = buildPayload();
+  const r = await fetch(API + "/predict", {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    credentials: "include",
+    body: JSON.stringify(payload)
+  });
+  renderPrettyOutputs(await r.json());
+}
+
+async function explain(){
+  const payload = buildPayload();
+  const r = await fetch(API + "/explain", {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    credentials: "include",
+    body: JSON.stringify(payload)
+  });
+
+  show(await r.json());
+}
+</script>
+</body>
+</html>
