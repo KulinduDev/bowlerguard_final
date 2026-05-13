@@ -76,4 +76,4 @@ python app.py
 ## Author
 
 **Kulindu Ransika Hewamaddumage**
-[LinkedIn](https://linkedin.com/in/YOUR_LINKEDIN) · [GitHub](https://github.com/KulinduDev)
+[LinkedIn](https://linkedin.com/in/https://www.linkedin.com/in/kulindu/) · [GitHub](https://github.com/KulinduDev)
