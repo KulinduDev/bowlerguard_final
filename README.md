@@ -1,129 +1,79 @@
 # BowlerGuard
 
-BowlerGuard is an AI/ML-based decision-support prototype for predicting fatigue-driven injury risk in cricket fast bowlers using workload, recovery, and environmental context. The system was developed as a final year research project and focuses on Sri Lankan Test-match fast bowlers under local playing conditions.
+> Predicting immediate injury risk for cricket fast bowlers from accumulated fatigue — no sensors required.
 
-The project combines:
-- publicly available workload-related match data
-- literature-based proxy fatigue and injury-risk generation
-- machine learning for multiclass injury-risk prediction
-- explainable AI for identifying the main drivers behind each prediction
-- a web-based prototype with authentication and role-based access
-
----
-
-## Project Aim
-
-The aim of BowlerGuard is to provide a practical and explainable framework for short-term injury-risk assessment when direct physiological and medical injury datasets are not available.
-
-Instead of relying on expensive real-time wearable data, the system uses:
-- recent bowling workload
-- recovery period
-- match context
-- weather-related stress indicators
-
-to estimate:
-- a fatigue score
-- an injury-risk class: **Low**, **Medium**, or **High**
-- the top contributing factors behind the prediction
+![Python](https://img.shields.io/badge/Python-3776AB?style=flat&logo=python&logoColor=white)
+![XGBoost](https://img.shields.io/badge/XGBoost-FF6600?style=flat&logoColor=white)
+![Flask](https://img.shields.io/badge/Flask-000000?style=flat&logo=flask&logoColor=white)
+![Scikit-learn](https://img.shields.io/badge/Scikit--learn-F7931E?style=flat&logo=scikit-learn&logoColor=white)
+![Pandas](https://img.shields.io/badge/Pandas-150458?style=flat&logo=pandas&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white)
 
 ---
 
-## Research Motivation
+## What it does
 
-Fast bowlers experience repeated high-intensity loading, especially in multi-day formats such as Test cricket. In Sri Lankan playing conditions, heat and humidity can further amplify accumulated fatigue. However, real injury datasets and continuous physiological monitoring data are rarely available in public cricket analytics settings.
+BowlerGuard is a Sports Tech SaaS platform that uses machine learning
+to flag when a fast bowler is at risk of injury — based purely on
+workload, recovery, environment, and match context data available
+from public cricket records. No wearables, no sensors.
 
-BowlerGuard addresses this gap by:
-1. generating proxy fatigue and proxy injury-risk labels using literature-based rules
-2. training machine learning models on the resulting dataset
-3. deploying the selected models in a working prototype for authenticated users such as coaches, physiotherapists, and analysts
-
----
-
-## Key Features
-
-- Login-based access to the system
-- Role-aware interface behaviour
-- Input form for workload, recovery, and environmental variables
-- Injury-risk prediction with class probabilities
-- Fatigue score prediction
-- SHAP-based explanation for model predictions
-- Offline notebook pipeline for:
-  - proxy-label generation
-  - data audit
-  - feature engineering
-  - model training
-  - model evaluation
-  - explainability analysis
+The goal: give coaches and analysts an auditable, explainable tool
+to make data-driven decisions about bowling loads before injuries happen.
 
 ---
 
-## System Overview
+## How it works
 
-The project has two main layers:
-
-### 1. Offline ML Pipeline
-Implemented in Jupyter notebooks for:
-- dataset preparation
-- proxy target generation
-- train/test splitting
-- feature engineering
-- model comparison
-- final model selection
-- artifact saving
-
-### 2. Online Prototype
-Implemented using:
-- **Flask** backend
-- **HTML/CSS/JavaScript** frontend
-
-The backend loads saved model artifacts and exposes routes for:
-- session checking
-- login/logout
-- prediction
-- explanation
+1. **ETL pipeline** — processes several hundred Cricsheet JSON files
+   into ~5,000 player-match instances
+2. **Feature engineering** — 12 features across workload, recovery,
+   environment, and match context
+3. **ML model** — multi-output XGBoost pipeline:
+   - 3-class injury risk classifier
+   - ROC-AUC: **0.85** | Accuracy: **68.77%**
+   - Baseline (rule-only): 46.75% — a **22-point improvement**
+4. **Explainability** — class-specific SHAP values make every
+   prediction auditable; validated with active coaches and analysts
+5. **API** — Flask MVP with a physiological simulation engine,
+   architected for Docker containerisation
 
 ---
 
-## Project Structure
+## Results
 
-```text
-bowlerguard/
-├── backend/
-│   ├── app.py
-│   └── bowlerguard_api/
-│       ├── __init__.py
-│       ├── auth_store.py
-│       ├── extensions.py
-│       ├── routes/
-│       │   ├── auth_routes.py
-│       │   ├── core_routes.py
-│       │   └── prediction_routes.py
-│       ├── services/
-│       │   └── model_service.py
-│       └── utils/
-│           ├── auth.py
-│           └── data_utils.py
-├── data/
-│   ├── raw/
-│   └── processed/
-├── frontend/
-│   ├── index.html
-│   ├── css/
-│   │   └── styles.css
-│   └── js/
-│       └── app.js
-├── model_store/
-│   ├── risk_model.pkl
-│   ├── fatigue_model.pkl
-│   ├── feature_cols.pkl
-│   └── risk_label_classes.pkl
-├── notebooks/
-│   ├── 00_proxy_label_refresh.ipynb
-│   ├── 01_data_audit.ipynb
-│   ├── 02_feature_engineering.ipynb
-│   ├── 03_baseline_models.ipynb
-│   ├── 04_final_models_save.ipynb
-│   └── 05_explainability.ipynb
-└── src/
-    └── bowlerguard/
-        └── proxy_rules.py
+| Metric | Score |
+|---|---|
+| ROC-AUC | 0.85 |
+| Accuracy | 68.77% |
+| Rule-only baseline | 46.75% |
+| Improvement | +22 points |
+
+---
+
+## Tech stack
+
+| Layer | Tools |
+|---|---|
+| Data | Python, Pandas, Cricsheet JSON |
+| ML | XGBoost, Scikit-learn, SHAP |
+| API | Flask |
+| Infra | Docker |
+
+---
+
+## Run locally
+
+```bash
+git clone https://github.com/KulinduDev/bowlerguard_final
+cd bowlerguard_final
+pip install -r requirements.txt
+python app.py
+```
+
+---
+
+## Author
+
+**Kulindu Ransika Hewamaddumage**
+[LinkedIn](https://linkedin.com/in/YOUR_LINKEDIN) · [GitHub](https://github.com/KulinduDev)
