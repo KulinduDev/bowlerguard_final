@@ -62,18 +62,11 @@ to make data-driven decisions about bowling loads before injuries happen.
 
 ---
 
-## Run locally
 
-```bash
-git clone https://github.com/KulinduDev/bowlerguard_final
-cd bowlerguard_final
-pip install -r requirements.txt
-python app.py
-```
 
 ---
 
 ## Author
 
 **Kulindu Ransika Hewamaddumage**
-[LinkedIn](https://linkedin.com/in/https://www.linkedin.com/in/kulindu/) · [GitHub](https://github.com/KulinduDev)
+[LinkedIn](https://linkedin.com/in/https://https://www.linkedin.com/in/kulindu/) · [GitHub](https://github.com/KulinduDev)
